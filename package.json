@@ -1,0 +1,23 @@
+{
+  "name": "sedaily-recommendation-engine",
+  "version": "1.0.0",
+  "description": "Recommendation system for content based on user's history",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoftwareEngineeringDaily/sedaily-recommendation-engine.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SoftwareEngineeringDaily/sedaily-recommendation-engine/issues"
+  },
+  "homepage": "https://github.com/SoftwareEngineeringDaily/sedaily-recommendation-engine#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
