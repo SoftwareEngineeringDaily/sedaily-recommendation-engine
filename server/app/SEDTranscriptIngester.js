@@ -1,8 +1,6 @@
 import config from '../../config/config';
 import ContentIngester from './ContentIngester';
 import request from 'request-promise';
-import fs from 'fs';
-import http from 'http';
 import url from 'url';
 import pdf from 'pdf-parse';
 
@@ -32,25 +30,15 @@ function getAllTranscripts(per_page, page) {
 }
 
 function downloadTranscript(file_url) {
-  var DOWNLOAD_DIR = './downloads/';
-  var options = {
-    host: url.parse(file_url).host,
-    port: 80,
-    path: url.parse(file_url).pathname
-  };
-
-  var file_name = url.parse(file_url).pathname.split('/').pop();
-  var file = fs.createWriteStream(DOWNLOAD_DIR + file_name);
-
-  return new Promise((resolve, reject) => {
-    http.get(options, function(res) {
-      res.on('data', function(data) {
-        file.write(data);
-      }).on('end', function() {
-        file.end();
-        resolve()
-      });
-    });
+  return request({
+    method: "GET",
+    uri: file_url,
+    encoding: null,
+    headers: {
+      "Content-type": "applcation/pdf"
+    }
+  }).then(response => {
+    return pdf(response)
   })
 }
 
@@ -58,8 +46,12 @@ function downloadAllTranscripts(allTranscriptUrls, index, callback) {
   var index = index ? index : 0;
   console.log('index:', index)
   downloadTranscript(allTranscriptUrls[index]).then(result => {
+    console.log(result.info.Title)
+    // console.log(result.text)
+    // send result to big table with associated title and/or id
     if (index < allTranscriptUrls.length) {
       downloadAllTranscripts(allTranscriptUrls, index + 1, callback)
+      return null;
     } else {
       callback(null)
     }
@@ -74,9 +66,7 @@ class SEDTranscriptIngester extends ContentIngester {
   }
 
   getContentAll() {
-    // loop through pages to get all transcripts
     let allTranscriptUrls = []
-    //allTranscriptUrls = allTranscriptUrls.concat(transcripts)
     getAllTranscripts("100", "1").then(transcripts => {
       return transcripts;
     })
@@ -110,7 +100,11 @@ class SEDTranscriptIngester extends ContentIngester {
   }
 
   getContentLatest() {
-    
+    getAllTranscripts("40", "1").then(transcripts => {
+      downloadAllTranscripts(transcripts, 0, () => {
+        console.log('done')
+      })
+    })
   }
 }
 
