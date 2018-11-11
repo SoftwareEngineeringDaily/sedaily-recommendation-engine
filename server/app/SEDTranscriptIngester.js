@@ -54,6 +54,20 @@ function downloadTranscript(file_url) {
   })
 }
 
+function downloadAllTranscripts(allTranscriptUrls, index, callback) {
+  var index = index ? index : 0;
+  console.log('index:', index)
+  downloadTranscript(allTranscriptUrls[index]).then(result => {
+    if (index < allTranscriptUrls.length) {
+      downloadAllTranscripts(allTranscriptUrls, index + 1, callback)
+    } else {
+      callback(null)
+    }
+  }).catch(err => {
+    callback(err)
+  })
+}
+
 class SEDTranscriptIngester extends ContentIngester {
   constructor() {
     super();
@@ -89,6 +103,9 @@ class SEDTranscriptIngester extends ContentIngester {
     .then(t => {
       allTranscriptUrls = allTranscriptUrls.concat(t)
       console.log(allTranscriptUrls.length)
+      downloadAllTranscripts(allTranscriptUrls, 0, () => {
+        console.log('done')
+      })
     })
   }
 
