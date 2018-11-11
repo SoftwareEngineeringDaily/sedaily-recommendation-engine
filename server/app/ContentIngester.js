@@ -1,7 +1,11 @@
 import { MethodNotImplemented } from '../APIError';
 
 class ContentIngester {
-  getContent(type) {
+  getContentLatest() {
+    throw MethodNotImplemented();
+  }
+
+  getContentAll() {
     throw MethodNotImplemented();
   }
 }
