@@ -1,11 +1,56 @@
+/*
+- get posts from https://software-enginnering-daily-api.herokuapp.com/api/posts
+- for each post
+  - get the url of the podcast episode
+  - get html of the link
+  - find the transcript url
+  - download and parse text from transcript
+  - upload to big table as unclassified
+*/
+
 import config from '../../config/config';
 import ContentIngester from './ContentIngester';
 import request from 'request-promise';
 import url from 'url';
 import pdf from 'pdf-parse';
+import {JSDOM} from "jsdom";
+
 
 let TRANSCRIPT_REGEX = /sed([0-9\.]+)/;
 let PDF_API_BASE_URL = "https://softwareengineeringdaily.com/wp-json/wp/v2/media?type=attachment&search=.pdf&";
+let PODCAST_CATEGORY = 14;
+let POSTS_API_BASE_URL = `https://software-enginnering-daily-api.herokuapp.com/api/posts?categories=${PODCAST_CATEGORY}&`;
+
+
+function getPosts(limit, page) {
+  let options = {
+    method: "GET",
+    uri: `${POSTS_API_BASE_URL}limit=${limit}&page=${page}`
+  }
+  return request(options).then(response => {
+    let allPosts = JSON.parse(response);
+    let posts = []
+    for (var index in allPosts) {
+      posts.push({
+        _id: allPosts[index]._id,
+        link: allPosts[index].link
+      })
+    }
+    return posts;
+  })
+}
+
+function getPostTranscriptUrl(postUrl) {
+  let options = {
+    method: "GET",
+    uri: postUrl
+  }
+  return request(options).then(response => {
+    const dom = new JSDOM(response);
+    console.log(dom.window.document.getElementsByClassName("post__content"));
+  })
+}
+
 
 function pdfToText(filename) {
   let dataBuffer = fs.readFileSync(filename);
@@ -22,6 +67,7 @@ function getAllTranscripts(per_page, page) {
     let transcripts = []
     for (var index in allPdfs) {
       if (allPdfs[index].slug.match(TRANSCRIPT_REGEX)) {
+        console.log(allPdfs[index])
         transcripts.push(allPdfs[index].guid.rendered)
       }
     }
@@ -100,10 +146,16 @@ class SEDTranscriptIngester extends ContentIngester {
   }
 
   getContentLatest() {
-    getAllTranscripts("40", "1").then(transcripts => {
-      downloadAllTranscripts(transcripts, 0, () => {
-        console.log('done')
+    // getAllTranscripts("4", "1").then(transcripts => {
+    //   downloadAllTranscripts(transcripts, 0, () => {
+    //     console.log('done')
+    //   })
+    // })
+    getPosts("1", "1").then(posts => {
+      posts.forEach(post => {
+        getPostTranscriptUrl(post.link)
       })
+      
     })
   }
 }

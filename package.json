@@ -34,6 +34,7 @@
     "hacker-news-api": "^2.0.0",
     "http-status": "^1.2.0",
     "joi": "^14.0.4",
+    "jsdom": "^13.0.0",
     "pdf-parse": "^1.1.1",
     "request-promise": "^4.2.2"
   },
