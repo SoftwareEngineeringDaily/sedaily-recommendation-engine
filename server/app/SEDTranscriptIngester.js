@@ -47,7 +47,13 @@ function getPostTranscriptUrl(postUrl) {
   }
   return request(options).then(response => {
     const dom = new JSDOM(response);
-    console.log(dom.window.document.getElementsByClassName("post__content"));
+    let list = dom.window.document.getElementsByClassName("post__content")[0].getElementsByTagName("p")
+    for (var i = 0; i < list.length; i++) {
+      // if (list[i].innerHTML contains "Transcript provided by We Edit Podcasts") {
+      //   console.log(list[i])
+      // }
+    }
+    
   })
 }
 
