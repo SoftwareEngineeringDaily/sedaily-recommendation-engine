@@ -1,0 +1,18 @@
+
+{
+	"url": {
+		"internal": "https://www.softwaredaily.com/post/5be16aeae5e4bd0004b1c6e2",
+		"com": "https://softwareengineeringdaily.com/2018/11/06/oss-capital-with-joseph-jacks/"
+	},
+	"title": "OSS Capital with Joseph Jacks",
+	"description": "",
+	"image_link": "https://i0.wp.com/softwareengineeringdaily.com/wp-content/uploads/2018/11/ossCapital.png?fit=800%2C800&ssl=1",
+	"ranking": {
+		"security": ".63",
+		"kubernetes": ".73",
+		"bitcoin" : ".22"
+	},
+	"classified": "true"
+}
+
+
